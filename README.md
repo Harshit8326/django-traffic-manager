@@ -100,17 +100,17 @@ Follow these steps to set up the project locally:
   
 ## Project Screenshots
 
-![Project Screenshot 1](Django Project/traffic_manager/images/image1.png)
-![Project Screenshot 2](Django Project/traffic_manager/images/image2.png)
-![Project Screenshot 3](Django Project/traffic_manager/images/image3.png)
-![Project Screenshot 4](Django Project/traffic_manager/images/image4.png)
-![Project Screenshot 5](Django Project/traffic_manager/images/image5.png)
-![Project Screenshot 6](Django Project/traffic_manager/images/image6.png)
-![Project Screenshot 7](Django Project/traffic_manager/images/image7.png)
-![Project Screenshot 9](Django Project/traffic_manager/images/image9.png)
-![Project Screenshot 10](Django Project/traffic_manager/images/image10.png)
-![Project Screenshot 11](Django Project/traffic_manager/images/image11.png)
-![Project Screenshot 12](Django Project/traffic_manager/images/image12.png)
+![Project Screenshot 1](django-traffic-manager/Django Project/traffic_manager/images/image1.png)
+![Project Screenshot 2](django-traffic-manager/Django Project/traffic_manager/images/image2.png)
+![Project Screenshot 3](django-traffic-manager/Django Project/traffic_manager/images/image3.png)
+![Project Screenshot 4](django-traffic-manager/Django Project/traffic_manager/images/image4.png)
+![Project Screenshot 5](django-traffic-manager/Django Project/traffic_manager/images/image5.png)
+![Project Screenshot 6](django-traffic-manager/Django Project/traffic_manager/images/image6.png)
+![Project Screenshot 7](django-traffic-manager/Django Project/traffic_manager/images/image7.png)
+![Project Screenshot 9](django-traffic-manager/Django Project/traffic_manager/images/image9.png)
+![Project Screenshot 10](django-traffic-manager/Django Project/traffic_manager/images/image10.png)
+![Project Screenshot 11](django-traffic-manager/Django Project/traffic_manager/images/image11.png)
+![Project Screenshot 12](django-traffic-manager/Django Project/traffic_manager/images/image12.png)
 
 ## License
 
