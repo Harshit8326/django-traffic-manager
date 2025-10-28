@@ -98,6 +98,19 @@ Follow these steps to set up the project locally:
     * Log in with superuser credentials.
     * From here, you can manually manage Incidents, Response Units, Traffic Reports, and Incident Logs. (Crucial for adding initial Response Units!).
   
+## Project Screenshots
+
+![Project Screenshot 1](images/image1.png)
+![Project Screenshot 2](images/image2.png)
+![Project Screenshot 3](images/image3.png)
+![Project Screenshot 4](images/image4.png)
+![Project Screenshot 5](images/image5.png)
+![Project Screenshot 6](images/image6.png)
+![Project Screenshot 7](images/image7.png)
+![Project Screenshot 9](images/image9.png)
+![Project Screenshot 10](images/image10.png)
+![Project Screenshot 11](images/image11.png)
+![Project Screenshot 12](images/image12.png)
 
 
 ## License
