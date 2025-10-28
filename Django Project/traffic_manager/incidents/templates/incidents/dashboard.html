@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Operator Dashboard{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <div class="lg:col-span-2 bg-gray-800 rounded-lg shadow-xl p-6">
+        <h2 class="text-2xl font-semibold text-white mb-4">Live Incident Map</h2>
+        <!-- Feature 5: The Live Map -->
+        <div id="map" class="h-[600px] rounded-lg z-0"></div>
+    </div>
+
+    <!-- Right Column: Lists -->
+    <div class="lg:col-span-1 space-y-6">
+
+        <!-- Feature 3: Active Incidents List -->
+        <div class="bg-gray-800 rounded-lg shadow-xl p-6">
+            <h3 class="text-xl font-semibold text-white mb-4">Active Incidents</h3>
+            <ul class="space-y-4 max-h-[250px] overflow-y-auto">
+                {% for incident in incidents %}
+                    <li class="border-b border-gray-700 pb-2">
+                        <a href="{{ incident.get_absolute_url }}" class="text-blue-400 hover:text-blue-300 font-medium">
+                            {{ incident.location_name }}
+                        </a>
+                        <p class="text-sm text-gray-400">
+                            {{ incident.get_incident_type_display }} | <span class="text-gray-500">{{ incident.report_time|timesince }} ago</span>
+                        </p>
+                    </li>
+                {% empty %}
+                    <li class="text-gray-400">No active incidents.</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Feature 2: Available Units List -->
+        <div class="bg-gray-800 rounded-lg shadow-xl p-6">
+            <h3 class="text-xl font-semibold text-white mb-4">Available Response Units</h3>
+            <ul class="space-y-2 max-h-[150px] overflow-y-auto">
+                {% for unit in units %}
+                    <li class="text-gray-300">{{ unit.name }} - <span class="text-green-400">{{ unit.get_status_display }}</span></li>
+                {% empty %}
+                    <li class="text-gray-400">No units available.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- NEW: Active Duty Units Panel -->
+            <div class="bg-gray-800 rounded-lg shadow-xl p-6">
+                <h3 class="text-xl font-semibold text-white mb-4">Active Duty Units</h3>
+                <ul class="space-y-3 max-h-48 overflow-y-auto">
+
+                    <!-- Loop through the 'busy_units' variable we added in views.py -->
+                    {% for unit in busy_units %}
+                        <li classs="flex items-center space-x-2">
+
+                            <!-- Show an orange dot for 'Dispatched' -->
+                            {% if unit.status == 'Dispatched' %}
+                                <span class="w-3 h-3 bg-orange-500 rounded-full flex-shrink-0 inline-block align-middle" title="Dispatched"></span>
+
+                            <!-- Show a red dot for 'On Scene' -->
+                            {% elif unit.status == 'On_Scene' %}
+                                <span class="w-3 h-3 bg-red-600 rounded-full flex-shrink-0 inline-block align-middle" title="On Scene"></span>
+                            {% endif %}
+
+                            <span class="ml-2 inline-block align-middle">
+                                {{ unit.name }} ({{ unit.get_status_display }})
+
+                                <!-- This code finds the incident the unit is assigned to -->
+                                {% with unit.incident_set.first as assigned_incident %}
+                                    {% if assigned_incident %}
+                                        <br>
+                                        <a href="{{ assigned_incident.get_absolute_url }}" class="text-sm text-blue-400 hover:underline ml-5">
+                                            → Incident #{{ assigned_incident.id }}
+                                        </a>
+                                    {% endif %}
+                                {% endwith %}
+                            </span>
+                        </li>
+                    {% empty %}
+                        <li class="text-gray-400">No units are currently dispatched.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <!-- END OF NEW PANEL -->
+        <!-- Feature 4: Traffic Reports List -->
+        <div class="bg-gray-800 rounded-lg shadow-xl p-6">
+            <!-- NEW FORM FOR FEATURE 3 -->
+            <form method="POST" class="mb-4">
+                {% csrf_token %}
+                <!-- This hidden input tells our view which button was pressed -->
+                <input type="hidden" name="action" value="add_congestion">
+
+                <label class="text-sm font-medium text-gray-300">Quick-Add Congestion</label>
+
+                <!-- This renders our new congestion_form -->
+                {{ congestion_form }}
+
+                <button type="submit" class="mt-2 w-full bg-yellow-600 hover:bg-yellow-700 text-gray-900 font-bold py-2 px-3 rounded-lg focus:outline-none focus:shadow-outline transition duration-300">
+                    Add Report
+                </button>
+            </form>
+
+            <div class="border-t border-gray-700 pt-4"> <!-- This adds a separator line -->
+            <!-- END OF NEW FORM -->
+            <h3 class="text-xl font-semibold text-white mb-4">High Congestion Reports</h3>
+            <ul class="space-y-2 max-h-[150px] overflow-y-auto">
+                {% for report in reports %}
+                    <li class="text-gray-300">{{ report.location_name }} - <span class="text-yellow-400">{{ report.get_congestion_level_display }}</span></li>
+                {% empty %}
+                    <li class="text-gray-400">No high congestion reports.</li>
+                {% endfor %}
+            </ul>
+        </div>
+        </div
+
+    </div>
+</div>
+
+<!-- JavaScript to power the map -->
+<script>
+    // 1. Initialize the map (set center to your city)
+    var map = L.map('map').setView([28.6139, 77.2090], 11); // Example: Delhi
+
+    // 2. Add the map background (tiles)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // 3. Loop through incidents from Django and add markers
+    {% for incident in incidents %}
+      L.marker([{{ incident.latitude }}, {{ incident.longitude }}])
+        .addTo(map)
+        .bindPopup("<b><a href='{{ incident.get_absolute_url }}' class='text-blue-600'>{{ incident.location_name }}</a></b><br>{{ incident.get_incident_type_display }}");
+    {% endfor %}
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Incident Details{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto mt-10 p-8 bg-gray-800 shadow-xl rounded-lg text-white">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        
+        <!-- COLUMN 1: INCIDENT DETAILS -->
+        <div>
+            <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-4">
+                Incident #{{ incident.id }}: {{ incident.location_name }}
+            </h2>
+            
+            <div class="space-y-4 text-lg">
+                <p>
+                    <strong class="text-gray-400 w-32 inline-block">Status:</strong>
+                    {% if incident.is_active %}
+                        <span class="px-3 py-1 bg-red-600 text-white rounded-full text-sm font-semibold">Active</span>
+                    {% else %}
+                        <span class="px-3 py-1 bg-green-600 text-white rounded-full text-sm font-semibold">Closed</span>
+                    {% endif %}
+                </p>
+                <p>
+                    <strong class="text-gray-400 w-32 inline-block">Type:</strong>
+                    {{ incident.get_incident_type_display }}
+                </p>
+                <p>
+                    <strong class="text-gray-400 w-32 inline-block">Reported:</strong>
+                    {{ incident.report_time }}
+                </p>
+                <p>
+                    <strong class="text-gray-400 w-32 inline-block">Location:</strong>
+                    ({{ incident.latitude }}, {{ incident.longitude }})
+                </p>
+                <p>
+                    <strong class="text-gray-400 w-32 inline-block">Assigned Unit:</strong>
+                    {{ incident.assigned_unit|default:"None" }}
+                </p>
+                
+                <div class="pt-4">
+                    <strong class="text-gray-400 block mb-2">Details:</strong>
+                    <p class="text-gray-300 bg-gray-700 p-4 rounded-lg">
+                        {{ incident.details|linebreaksbr|default:"No details provided." }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 2: ACTION FORM -->
+        <div>
+            <h3 class="text-2xl font-bold mb-6 border-b border-gray-700 pb-4">
+                Manage Incident
+            </h3>
+            
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <p class="text-gray-400">Assign an available unit to this incident.</p>
+                
+                <!-- This renders our "AssignUnitForm" -->
+                {{ form.as_p }}
+
+                <div>
+                    <button type="submit" name="action" value="assign_unit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300">
+                        Assign Unit
+                    </button>
+                </div>
+            </form>
+            
+            <!-- Close Incident Button -->
+            {% if incident.is_active %}
+            <div class="mt-8 border-t border-gray-700 pt-6">
+                 <p class="text-gray-400 mb-4">Once the incident is resolved, close it here.</p>
+                <form method="post" action="{% url 'incident_detail' incident.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="close_incident">
+                    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300">
+                        Close Incident
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
+        <!-- COLUMN 3: INCIDENT LOG (NEW) -->
+    <div class="md:col-span-2 mt-8 md:mt-0"> <!-- Spans full width on mobile, takes 2 cols on desktop -->
+
+        <!-- Add New Log Form -->
+        <h3 class="text-2xl font-bold mb-6 border-b border-gray-700 pb-4">
+            Add New Log Entry
+        </h3>
+        <form method="post">
+            {% csrf_token %}
+            <!-- This hidden input tells our view which button was pressed -->
+            <input type="hidden" name="action" value="add_log">
+
+            <!-- This renders our new log_form -->
+            {{ log_form.as_p }}
+
+            <button type="submit" class="mt-2 w-full md:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300">
+                Add Entry
+            </button>
+        </form>
+
+        <!-- Display Existing Logs -->
+        <h3 class="text-2xl font-bold mb-6 mt-12 border-b border-gray-700 pb-4">
+            Incident History
+        </h3>
+        <div class="space-y-6 max-h-[400px] overflow-y-auto pr-2">
+
+            <!-- Loop through the 'logs' variable from our view -->
+            {% for log in logs %}
+                <div class="p-4 bg-gray-700 rounded-lg shadow">
+                    <p class="text-gray-200">{{ log.text|linebreaksbr }}</p>
+                    <p class="text-xs text-gray-400 mt-2">
+                        By {{ log.operator.username|default:"System" }}
+                        at {{ log.timestamp }}
+                    </p>
+                </div>
+            {% empty %}
+                <p class="text-gray-400">No log entries for this incident.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+    <!-- END OF COLUMN 3 -->
+        
+    </div>
+</div>
+{% endblock %}
+

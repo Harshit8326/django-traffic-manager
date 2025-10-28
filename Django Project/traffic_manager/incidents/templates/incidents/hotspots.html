@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Accident Hotspots{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-10">
+    <div class="bg-gray-800 shadow-xl rounded-lg p-8">
+        <h2 class="text-3xl font-bold text-center text-white mb-6">
+            Incident Hotspot Analysis
+        </h2>
+        <p class="text-center text-gray-400 mb-8">
+            These are the locations with the highest number of total reports,
+            helping us identify and reduce accidents.
+        </p>
+
+        <!-- Hotspot Table -->
+        <div class="overflow-x-auto rounded-lg shadow">
+            <table class="w-full text-left text-gray-300">
+                <thead class="bg-gray-700 text-sm uppercase text-gray-400">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">
+                            Rank
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Location
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center">
+                            Total Reports
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for spot in hotspots %}
+                    <tr class="bg-gray-800 border-b border-gray-700 hover:bg-gray-700">
+                        <!-- Use forloop.counter for the rank -->
+                        <td class="px-6 py-4 font-medium text-white">
+                            #{{ forloop.counter }}
+                        </td>
+                        <td class="px-6 py-4 font-medium text-white">
+                            {{ spot.location_name }}
+                        </td>
+                        <td class="px-6 py-4 text-center text-lg font-bold">
+                            {{ spot.incident_count }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr class_>
+                        <td colspan="3" class="text-center p-6 text-gray-400">
+                            No incident reports found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+

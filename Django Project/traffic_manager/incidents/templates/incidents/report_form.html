@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Report Incident{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto mt-10">
+    <div class="bg-gray-800 shadow-xl rounded-lg p-8">
+        <h2 class="text-3xl font-bold text-center text-white mb-6">
+            Report a New Incident
+        </h2>
+        <p class="text-center text-gray-400 mb-8">
+            See an accident or major congestion? Let us know.
+        </p>
+
+        <!-- The Report Form -->
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- This renders all our styled fields from forms.py -->
+            {{ form.as_p }}
+
+            <!-- Submit Button -->
+            <div>
+                <button type"submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition duration-300">
+                    Submit Report
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
